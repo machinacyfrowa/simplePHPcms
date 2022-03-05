@@ -63,28 +63,11 @@ switch($action) {
             $s->display("message.tpl");
         }
     break;
+    default:
+        $s->assign("message", "Nieprawidłowy parametr action");
+        $s->display("message.tpl"); 
+    break;
 }
 
-/*
-if (isset($_REQUEST['action'])) {
 
-
-    if ($_REQUEST['action'] == "savePage" && $_REQUEST['pageID'] != null) {
-        if ($_REQUEST['pageID'] == 0) {
-            //nowa strona
-            $q = $db->prepare("INSERT INTO page VALUES (NULL, ?, ?)");
-            $q->bind_param("ss", $_REQUEST['title'], $_REQUEST['content']);
-            $q->execute();
-            echo "Strona utworzona poprawnie!";
-        } else {
-            $q = $db->prepare("UPDATE page SET title = ?, content = ? WHERE id = ?");
-            $q->bind_param("ssi", $_REQUEST['title'], $_REQUEST['content'], $_REQUEST['pageID']);
-            $q->execute();
-            echo "Strona zapisana poprawnie!";
-        }
-    }
-
-}
-
-*/
 ?>
