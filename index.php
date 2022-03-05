@@ -1,11 +1,18 @@
-<a href="index.php?pageID=1">Pierwsza strona</a>
-<a href="index.php?pageID=2">druga strona</a>
-<a href="index.php?pageID=3">Trzecia strona</a>
-
 
 
 <?php
 $db = new mysqli("localhost", "root", "", "cms");
+
+$q = $db->prepare("SELECT id, title FROM page");
+$q->execute();
+$result = $q->get_result();
+foreach($result as $row) {
+    $pageID = $row['id'];
+    $title = $row['title'];
+    echo '<a href="index.php?pageID='.$pageID.'">'.$title.'</a>';
+}
+
+
 $pageID = intval($_REQUEST['pageID']);
 $q = $db->prepare("SELECT * FROM page WHERE id = ? LIMIT 1");
 $q->bind_param("i", $pageID);
