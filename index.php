@@ -1,16 +1,27 @@
-
-
 <?php
+require('./smarty/Smarty.class.php');
+
+$s = new Smarty();
+
+$s->setTemplateDir('./smarty/templates');
+$s->setCompileDir('./smarty/templates_c');
+$s->setCacheDir('./smarty/cache');
+$s->setConfigDir('./smarty/configs');
+
 $db = new mysqli("localhost", "root", "", "cms");
+
 
 $q = $db->prepare("SELECT id, title FROM page");
 $q->execute();
 $result = $q->get_result();
+$navMenu = array();
 foreach($result as $row) {
-    $pageID = $row['id'];
-    $title = $row['title'];
-    echo '<a href="index.php?pageID='.$pageID.'">'.$title.'</a>';
+    //$pageID = $row['id'];
+    //$title = $row['title'];
+    //echo '<a href="index.php?pageID='.$pageID.'">'.$title.'</a>';
+    array_push($navMenu, $row);
 }
+$s->assign('navMenu', $navMenu);
 
 
 $pageID = intval($_REQUEST['pageID']);
@@ -22,8 +33,7 @@ $result = $q->get_result();
 //tablica asocjacyjna z pojedyńczą stroną
 $page = $result->fetch_assoc();
 
-echo "<h1>" . $page['title'] . "</h1>";
-echo "<div>" . $page['content'] . "<div>";
+$s->assign('page', $page);
 
-//var_dump($page);
+$s->display('index.tpl');
 ?>

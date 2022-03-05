@@ -1,4 +1,12 @@
 <?php
+require('./../smarty/Smarty.class.php');
+
+$s = new Smarty();
+
+$s->setTemplateDir('./../smarty/templates');
+$s->setCompileDir('./../smarty/templates_c');
+$s->setCacheDir('./../smarty/cache');
+$s->setConfigDir('./../smarty/configs');
 $db = new mysqli("localhost", "root", "", "cms");
 
 if (!isset($_REQUEST['action']) || $_REQUEST['action'] == "pageList") {
