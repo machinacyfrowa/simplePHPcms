@@ -1,6 +1,22 @@
 <?php
 $db = new mysqli("localhost", "root", "", "cms");
 
+if($_REQUEST['action'] == "pageList") {
+    $q = $db->prepare("SELECT * FROM page");
+    $q->execute();
+    $result = $q->get_result();
+    echo '<table>';
+    foreach($result as $row) {
+        echo '<tr>';
+        echo '<td>'.$row['id'].'</td>';
+        echo '<td>'.$row['title'].'</td>';
+        echo '<td><a href="index.php?action=editPage&pageID='.$row['id'].'">
+                <button>Edytuj</button></a></td>';
+        echo '</tr>';
+    }
+    echo '<table>';
+}
+
 if ($_REQUEST['action'] == "savePage" && $_REQUEST['pageID'] != null) {
     $q = $db->prepare("UPDATE page SET title = ?, content = ? WHERE id = ?");
     $q->bind_param("ssi", $_REQUEST['title'], $_REQUEST['content'], $_REQUEST['pageID']);
@@ -32,7 +48,7 @@ if ($_REQUEST['action'] == "editPage" && $_REQUEST['pageID'] != null) {
         <input type="hidden" name="pageID" value="<?php echo $pageID; ?>">
         <input type="submit" value="Zapisz">
     </form>
-
+    <a href="index.php?action=pageList">Powrót</a>
 <?php
 }
 
