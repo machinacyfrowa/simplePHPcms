@@ -27,7 +27,7 @@ Route::add('/strona/([0-9]*)', function($i) {
     $s->display('index.tpl');
 });
 */
-//ręcznie
+/*
 Route::add('/strona-glowna', function() {
     global $s;
     $s->assign('navMenu', getNavMenu());
@@ -46,10 +46,28 @@ Route::add('/galeria', function() {
     $s->assign('page', getPage(3));
     $s->display('index.tpl');
 });
+
 Route::add('/kontakt', function() {
     global $s;
     $s->assign('navMenu', getNavMenu());
     $s->assign('page', getPage(6));
+    $s->display('index.tpl');
+});
+*/
+Route::add('/([a-z0-9-]*)', function($slug) {
+    global $s;
+    //mamy url ze slugiem ...
+    $page = getPageFromSlug($slug);
+    
+    if(count($page) == 0) {
+        
+        header("HTTP/1.0 404 Not Found");
+        exit;
+    
+    }
+       
+    $s->assign('navMenu', getNavMenu());
+    $s->assign('page', $page);
     $s->display('index.tpl');
 });
 
@@ -115,6 +133,18 @@ function getPage(int $pageId) : array {
     //tablica asocjacyjna z pojedyńczą stroną
     return $result->fetch_assoc();
 }
+function getPageFromSlug(string $slug) : array {
+    global $db;
+    $q = $db->prepare("SELECT * FROM page WHERE slug = ? LIMIT 1");
+    $q->bind_param("s", $slug);
+    $q->execute();
+    $result = $q->get_result();
+    if($result->num_rows == 0)
+    //jeżeli nie ma takiej strony to zwróc pustą tablicę
+        return Array();
+    //tablica asocjacyjna z pojedyńczą stroną
+    return $result->fetch_assoc();
+}
 function getNavMenu() : array {
     global $db;
     $q = $db->prepare("SELECT id, title FROM page");
@@ -122,11 +152,16 @@ function getNavMenu() : array {
     $result = $q->get_result();
     $navMenu = array();
     foreach($result as $row) {
-        $row['url'] = str_replace(' ','-',$row['title']);
-        $row['url'] = str_replace('ó','o',$row['url']);
-        $row['url'] = str_replace('ł','l',$row['url']);
-        $row['url'] = strtolower($row['url']);
+        $row['url'] = getSlug($row['title']);
         array_push($navMenu, $row);
     }
     return $navMenu;
+}
+function getSlug(string $text) : string {
+    $slug = strtolower($text);
+    $slug = str_replace(' ','-',$slug);
+    $slug = str_replace('ó','o',$slug);
+    $slug = str_replace('ł','l',$slug);
+    $slug = str_replace('ą','a',$slug);
+    return $slug;
 }

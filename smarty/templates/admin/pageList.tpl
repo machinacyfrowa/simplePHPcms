@@ -9,18 +9,18 @@
             <td>{$page.id}</td>
             <td>{$page.title}</td>
             <td>
-                <a class="btn btn-primary" href="index.php?action=editPage&pageID={$page.id}">
+                <a class="btn btn-primary" href="edit-page/{$page.id}">
                 Edytuj
                 </a>
             </td>
             <td>
-                <a class="btn btn-primary" href="index.php?action=deletePage&pageID={$page.id}">
+                <a class="btn btn-primary" href="delete-page/{$page.id}">
                 Usuń
                 </a>
             </td>
            </tr> 
         {/foreach}
     <table>
-    <a class="btn btn-primary" href="index.php?action=newPage">Nowa strona</a>
+    <a class="btn btn-primary" href="new-page/">Nowa strona</a>
     </main>
 {include file="foot.tpl"}

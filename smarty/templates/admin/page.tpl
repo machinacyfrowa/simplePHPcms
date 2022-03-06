@@ -1,5 +1,5 @@
 {include file="head.tpl"}
-<form action="index.php" method="post">
+<form action="/cms/admin/save-page" method="post">
     <label for="titeInput">Tytuł strony:</label>
     <input type="text" name="title" id="titleInput" 
         value="{$page.title|default:""}"> <br>
@@ -11,6 +11,6 @@
     <input type="hidden" name="pageID" value="{$page.id|default:"0"}">
     <input type="submit" value="Zapisz">
 </form>
-<a class="btn btn-primary" href="index.php">Powrót</a>
+<a class="btn btn-primary" href="/cms/admin">Powrót</a>
 
 {include file="foot.tpl"}
