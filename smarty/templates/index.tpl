@@ -12,7 +12,7 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         {foreach $navMenu as $item}
                         <li class="nav-item">
-                            <a class="nav-link" href="index.php?pageID={$item.id}">{$item.title}</a>
+                            <a class="nav-link" href="{$item.url}">{$item.title}</a>
                         </li>
                         {/foreach}
                     </ul>

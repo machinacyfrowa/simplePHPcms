@@ -19,28 +19,80 @@ Route::add('/', function() {
     $s->assign('page', getPage(1));
     $s->display('index.tpl');
 });
-
+/*
 Route::add('/strona/([0-9]*)', function($i) {
     global $s;
     $s->assign('navMenu', getNavMenu());
     $s->assign('page', getPage($i));
     $s->display('index.tpl');
 });
+*/
 //ręcznie
-Route::add('/kontakt-recznie', function() {
+Route::add('/strona-glowna', function() {
+    global $s;
+    $s->assign('navMenu', getNavMenu());
+    $s->assign('page', getPage(1));
+    $s->display('index.tpl');
+});
+Route::add('/o-nas', function() {
+    global $s;
+    $s->assign('navMenu', getNavMenu());
+    $s->assign('page', getPage(2));
+    $s->display('index.tpl');
+});
+Route::add('/galeria', function() {
+    global $s;
+    $s->assign('navMenu', getNavMenu());
+    $s->assign('page', getPage(3));
+    $s->display('index.tpl');
+});
+Route::add('/kontakt', function() {
     global $s;
     $s->assign('navMenu', getNavMenu());
     $s->assign('page', getPage(6));
     $s->display('index.tpl');
 });
 
-$pages = getPages();
-//echo "<pre>";
+
+//$pages = getPages();
+
+
+
 //var_dump($pages);
-
-
+/* nie udało sie
+foreach($pages as $page) {
+    // to powinno nam dać url np. /o-nas albo /galeria
+    $url = '/'.$page['title'];
+    $pageId = $page['id'];
+    //echo "tworze url: ". $url;
+    //Route::add($url, displayPage($page['id']) );
+    Route::add($url, function () {
+        global $s, $pageId, $url;
+        echo "Wyświetlam stronę $url";
+        $s->assign('navMenu', getNavMenu());
+        $s->assign('page', getPage($pageId));
+        $s->display('index.tpl');
+    } );
+}
+*/
+/*
+$routes = Route::getAll();
+foreach($routes as $route) {
+  echo $route['expression'].' ('.$route['method'].')';
+}
+echo "<pre>routes:";
+var_dump($routes);
+*/
 // Run the router
 Route::run('/cms');
+
+/*
+function displayPage(int $pageId) {
+    global $s;
+    $s->assign('navMenu', getNavMenu());
+    $s->assign('page', getPage($pageId));
+    $s->display('index.tpl');
+}
 
 function getPages() : array {
     $pages = getNavMenu();
@@ -52,7 +104,7 @@ function getPages() : array {
     }
     return $pages;
 }
-
+*/
 function getPage(int $pageId) : array {
     global $db;
     $q = $db->prepare("SELECT * FROM page WHERE id = ? LIMIT 1");
@@ -70,15 +122,11 @@ function getNavMenu() : array {
     $result = $q->get_result();
     $navMenu = array();
     foreach($result as $row) {
-        //$pageID = $row['id'];
-        //$title = $row['title'];
-        //echo '<a href="index.php?pageID='.$pageID.'">'.$title.'</a>';
+        $row['url'] = str_replace(' ','-',$row['title']);
+        $row['url'] = str_replace('ó','o',$row['url']);
+        $row['url'] = str_replace('ł','l',$row['url']);
+        $row['url'] = strtolower($row['url']);
         array_push($navMenu, $row);
     }
     return $navMenu;
 }
-
-
-
-
-?>
