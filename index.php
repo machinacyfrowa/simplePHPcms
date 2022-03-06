@@ -34,9 +34,24 @@ Route::add('/kontakt-recznie', function() {
     $s->display('index.tpl');
 });
 
+$pages = getPages();
+//echo "<pre>";
+//var_dump($pages);
+
 
 // Run the router
 Route::run('/cms');
+
+function getPages() : array {
+    $pages = getNavMenu();
+    foreach($pages as &$page) {
+        $page['title'] = str_replace(' ','-',$page['title']);
+        $page['title'] = str_replace('ó','o',$page['title']);
+        $page['title'] = str_replace('ł','l',$page['title']);
+        $page['title'] = strtolower($page['title']);
+    }
+    return $pages;
+}
 
 function getPage(int $pageId) : array {
     global $db;
