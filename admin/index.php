@@ -25,10 +25,11 @@ Route::add('/login', function() {
     $q->bind_param("s", $email);
     $q->execute();
     $result = $q->get_result();
+    
     if($result->num_rows > 0) {
         //znaleziono użytkownika
         $user = $result->fetch_assoc();
-        if(password_hash($password, PASSWORD_ARGON2I) == $user['passwordHash']) {
+        if(password_verify($password, $user['passwordHash'])) {
             //zalogowano poprawnie
             session_start();
             $_SESSION['userId'] = $user['id'];
@@ -53,7 +54,23 @@ Route::add('/register', function() {
 });
 
 Route::add('/register', function() {
-    
+    global $db, $s;
+    $email = $_REQUEST['email'];
+    $password = $_REQUEST['password'];
+    $passwordRepeat = $_REQUEST['passwordRepeat'];
+    if($password != $passwordRepeat) {
+        //hasła niezgodne
+        $s->assign("message", "Hasła nie są takie same");
+        $s->display("register.tpl");
+    } else {
+        //hasła były zgodne
+        $q = $db->prepare("INSERT INTO user VALUES (NULL, ?, ?)");
+        $passwordHash = password_hash($password, PASSWORD_ARGON2I);
+        $q->bind_param("ss", $email, $passwordHash);
+        $q->execute();
+        $s->assign("message", "Konto utworzone, zaloguj się");
+        $s->display("register.tpl");
+    }
 
 }, 'post');
 

@@ -1,5 +1,5 @@
 {include file="head.tpl"}
-<form action="cms/admin/register" method="post">
+<form action="" method="post">
     <div class="form-group">
         <label for="emailInput">E-mail:</label>
         <input type="email" name="email" id="emailInput">
@@ -14,4 +14,5 @@
     </div>
     <button type="submit" class="btn btn-primary">Zarejestruj</button>
 </form>
+{$message|default:""}
 {include file="foot.tpl"}
