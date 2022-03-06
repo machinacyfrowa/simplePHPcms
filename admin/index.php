@@ -11,6 +11,52 @@ $s->setCompileDir('./../smarty/templates_c');
 $s->setCacheDir('./../smarty/cache');
 $s->setConfigDir('./../smarty/configs');
 $db = new mysqli("localhost", "root", "", "cms");
+
+Route::add('/login', function() {
+    global $s;
+    $s->display('login.tpl');
+});
+
+Route::add('/login', function() {
+    global $db, $s;
+    $email = $_REQUEST['email'];
+    $password = $_REQUEST['password'];
+    $q = $db->prepare("SELECT id, passwordHash FROM user WHERE email = ?");
+    $q->bind_param("s", $email);
+    $q->execute();
+    $result = $q->get_result();
+    if($result->num_rows > 0) {
+        //znaleziono użytkownika
+        $user = $result->fetch_assoc();
+        if(password_hash($password, PASSWORD_ARGON2I) == $user['passwordHash']) {
+            //zalogowano poprawnie
+            session_start();
+            $_SESSION['userId'] = $user['id'];
+            $s->assign("message", "Zalogowano poprawnie");
+            $s->display("message.tpl");
+        } else {
+            //błędny login lub hasło
+            $s->assign("message", "Błedny email lub hasło!");
+            $s->display("login.tpl");
+        }
+    } else {
+        //nie ma użytkownika o tkaim adresie
+        $s->assign("message", "Błedny email lub hasło!");
+        $s->display("login.tpl");
+    }
+    
+}, 'post');
+
+Route::add('/register', function() {
+    global $s;
+    $s->display('register.tpl');
+});
+
+Route::add('/register', function() {
+    
+
+}, 'post');
+
 Route::add('/',function(){
     global $db, $s;
     $q = $db->prepare("SELECT * FROM page");
